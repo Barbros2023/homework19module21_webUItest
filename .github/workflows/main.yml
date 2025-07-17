@@ -1,4 +1,4 @@
-name: Run WEB UI Tests
+name: Run web UI Tests
 
 on:
   push:
@@ -21,12 +21,12 @@ jobs:
     - name: Give permission to Gradle wrapper
       run: chmod +x ./gradlew
 
-    - name: Run API Tests
+    - name: Run web UI Tests
       run: ./gradlew test
 
     - name: Upload Test Report
       uses: actions/upload-artifact@v4
       with:
-        name: api-test-report
+        name: web UI-test-report
         path: build/reports/tests/test/
 
