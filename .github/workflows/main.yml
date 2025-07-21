@@ -41,3 +41,13 @@ jobs:
       with:
         name: ui-test-report
         path: build/reports/tests/test/
+
+    - name: Show test log on failure
+      if: failure()
+      run: |
+        echo "=== STDOUT ==="
+        cat build/test-results/test/TEST-*.xml || true
+
+        echo "=== HTML Report (text version) ==="
+        cat build/reports/tests/test/index.html || true
+
