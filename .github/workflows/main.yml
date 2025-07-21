@@ -18,12 +18,23 @@ jobs:
         distribution: 'temurin'
         java-version: '20'
 
+    - name: Install Chrome and Chromedriver
+      run: |
+        sudo apt update
+        sudo apt install -y google-chrome-stable xvfb
+        CHROME_VERSION=$(google-chrome --version | grep -oP "\d+\.\d+\.\d+" | head -1)
+        wget -q -O /tmp/chromedriver.zip "https://chromedriver.storage.googleapis.com/${CHROME_VERSION}/chromedriver_linux64.zip"
+        unzip /tmp/chromedriver.zip -d /tmp/
+        sudo mv /tmp/chromedriver /usr/local/bin/
+        sudo chmod +x /usr/local/bin/chromedriver
+
     - name: Give permission to Gradle wrapper
       run: chmod +x ./gradlew
 
     - name: Run UI Tests
-      run: ./gradlew test
-      continue-on-error: true   # 👈 This allows workflow to continue even if tests fail
+      run: |
+        export DISPLAY=:99
+        ./gradlew test
 
     - name: Upload Test Report
       uses: actions/upload-artifact@v4
