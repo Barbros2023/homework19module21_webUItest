@@ -31,7 +31,9 @@ jobs:
     - name: Give permission to Gradle wrapper
       run: chmod +x ./gradlew
 
-    - name: Run UI Tests
+    - name: Run UI Tests (but capture failure)
+      id: run_tests
+      continue-on-error: true
       run: |
         export DISPLAY=:99
         ./gradlew test
@@ -42,12 +44,16 @@ jobs:
         name: ui-test-report
         path: build/reports/tests/test/
 
-    - name: Show test log on failure
-      if: failure()
+    - name: Show test log output
+      if: always()
       run: |
-        echo "=== STDOUT ==="
+        echo "=== XML Test Output ==="
         cat build/test-results/test/TEST-*.xml || true
-
-        echo "=== HTML Report (text version) ==="
+    
+        echo "=== HTML Report Index (raw) ==="
         cat build/reports/tests/test/index.html || true
+    
+    - name: Fail if tests failed
+      if: steps.run_tests.outcome == 'failure'
+      run: exit 1
 
