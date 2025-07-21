@@ -5,6 +5,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import pages.LoginPage;
 import io.github.bonigarcia.wdm.WebDriverManager;
+import org.openqa.selenium.chrome.ChromeOptions; //dari chatGPT
 
 import static org.junit.Assert.*;
 
@@ -17,7 +18,17 @@ public class LoginSteps {
     @Given("I am on the login page")
     public void i_am_on_the_login_page() {
         WebDriverManager.chromedriver().setup();
-        driver = new ChromeDriver();
+        //mulai sini dari chatGPT
+        ChromeOptions options = new ChromeOptions();
+
+        if (System.getenv("CI") != null) {
+            options.addArguments("--headless=new");
+            options.addArguments("--no-sandbox");
+            options.addArguments("--disable-dev-shm-usage");
+        }
+        
+        driver = new ChromeDriver(options);
+        //sampe sini
         loginPage = new LoginPage(driver);
         loginPage.goToLoginPage();
     }
